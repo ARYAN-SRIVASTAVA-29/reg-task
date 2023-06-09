@@ -9,10 +9,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-mongoose
-  .connect('mongodb://0.0.0.0:27017/registration', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://0.0.0.0:27017/registration', { useNewUrlParser: true, useUnifiedTopology: true })
 
-// Define a schema for the registration data
+
 const registrationSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
@@ -28,15 +27,15 @@ const registrationSchema = new mongoose.Schema({
   email: String,
 });
 
-// Create a model based on the schema
+
 const Registration = mongoose.model('Registration', registrationSchema);
 
-// Serve the registration form
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// Serve the registration form with success message
+
 app.get('/registration', (req, res) => {
   const success = req.query.success;
   if (success === 'true') {
@@ -45,7 +44,7 @@ app.get('/registration', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// Retrieve all registrations
+
 app.get('/registrations', (req, res) => {
   Registration.find()
     .then(registrations => {
@@ -57,7 +56,7 @@ app.get('/registrations', (req, res) => {
     });
 });
 
-// Retrieve a single registration by ID
+
 app.get('/registrations/:id', (req, res) => {
   const id = req.params.id;
   Registration.findById(id)
@@ -73,7 +72,7 @@ app.get('/registrations/:id', (req, res) => {
     });
 });
 
-// Update a registration by ID
+
 app.put('/registrations/:id', (req, res) => {
   const id = req.params.id;
   const formData = req.body;
@@ -90,7 +89,7 @@ app.put('/registrations/:id', (req, res) => {
     });
 });
 
-// Delete a registration by ID
+
 app.delete('/registration/:id', (req, res) => {
   const id = req.params.id;
   Registration.findByIdAndDelete(id)
@@ -107,17 +106,17 @@ app.delete('/registration/:id', (req, res) => {
     });
 });
 
-// Handle form submission 
+ 
 app.post('/registration', (req, res) => {
   const formData = req.body;
 
-  // Create a new registration document
+
   const registration = new Registration(formData);
 
-  // Save the registration to the database
+
   registration.save()
     .then(() => {
-      // Send a JSON response indicating success
+  
       res.json({ success: true });
     })
     .catch(err => {
